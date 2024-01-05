@@ -1,0 +1,98 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: calibri;
+    color: white
+}
+
+body {
+    background-color: black;
+    text-align: center;
+}
+
+.contenedorProductos {
+    border: 2px solid white; 
+    margin: 10px;
+    color:rgb(158, 158, 153);
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgb(0, 0, 173);
+    color:rgb(158, 158, 153);
+}
+
+nav {
+
+    background-color: rgb(0, 0, 173);
+    color:rgb(158, 158, 153);
+}
+
+ul {
+    list-style: none;
+    margin: 0px;
+}
+
+ul li {
+    padding: 10px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+ul li a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    text-align: center;
+}
+
+ul li ul.menuDesplegable li {
+    display: block;
+}
+
+ul li ul.menuDesplegable {
+    width: 100%;
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+
+ul li:hover {
+    background-color: aqua;
+}
+
+ul li:hover ul.menuDesplegable {
+    display: block;
+}
+
+#contenedorPrincipal {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.contenedorTitulo {
+    border: 1px solid red;
+    grid-column: span 4;
+    padding: 50px 0px 50px 0px;
+    text-align: left;
+}
+
+.contenedorTitulo h2 {
+    margin-left: 30px;
+}
+
+.contenedorProducto {
+    border: 1px solid yellow;
+    height:  400px;
+}
+
+.contenedorProducto img {
+    width: 100%;
+}
+
