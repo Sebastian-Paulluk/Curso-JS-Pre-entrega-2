@@ -3,12 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Pre entrega 2</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
     <header id="header">
-        <h1>Mi pagina</h1>
+        <h1>Pre entrega 2</h1>
+        <nav>
+            <div id="contItemsFiltros">
+                <ul>
+                    <p>Ordenar por</p>
+                    <select id="orden">
+                        <option>Id</option>
+                        <option>Más nuevos</option>
+                        <option>Mayor precio</option>
+                        <option>Menor precio</option>
+                    </select>
+                </ul>
+            </div>
+            <div>
+                <ul id="listaCategorias">
+                    <li id="botonMostrarTodos">Todos los productos</li>
+                </ul>
+            </div>
+            <div id="contItemCarrito">
+                <ul>
+                    <li id="botonCarrito">
+                        <img src="./assets/iconos/carrito_blanco.png">
+                        <p id="textoCantItemsEnCarrito"></p>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </header>
     <div id="contenedorPrincipal"></div>
     <footer></footer>

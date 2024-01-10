@@ -2,19 +2,24 @@
     margin: 0px;
     padding: 0px;
     font-family: calibri;
-    color: white
+    color: white;
+    box-sizing: border-box;
 }
 
 body {
     background-color: black;
     text-align: center;
+
 }
 
-.contenedorProductos {
-    border: 2px solid white; 
-    margin: 10px;
-    color:rgb(158, 158, 153);
+#contenedorPrincipal {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+
 }
+
+
 
 header {
     display: flex;
@@ -25,17 +30,45 @@ header {
 }
 
 nav {
-
+    border-top: 1px solid white;
+    border-bottom: 1px solid white;
     background-color: rgb(0, 0, 173);
     color:rgb(158, 158, 153);
+    width: 100%;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#botonCarrito {
+    display: flex;
+    align-items: center;
+}
+
+#contItemsFiltros {
+    margin-right: auto;
+}
+
+#contItemsFiltros select{
+    color: black;
+}
+
+#contItemsFiltros select option{
+    color: black;
+}
+
+
+#contItemCarrito {
+    margin-left: auto;
 }
 
 ul {
     list-style: none;
-    margin: 0px;
 }
 
 ul li {
+
     padding: 10px;
     display: inline-block;
     position: relative;
@@ -47,38 +80,39 @@ ul li a {
     display: block;
     padding: 10px;
     text-decoration: none;
-    text-align: center;
 }
 
-ul li ul.menuDesplegable li {
+
+ul li ul.listaDesplegable li {
     display: block;
 }
 
-ul li ul.menuDesplegable {
+ul li ul.listaDesplegable {
     width: 100%;
     position: absolute;
     z-index: 999;
     display: none;
+    background-color: rgb(0, 0, 173);
 }
 
 ul li:hover {
-    background-color: aqua;
+    background-color: rgb(161, 102, 218);
 }
 
-ul li:hover ul.menuDesplegable {
+ul li:hover ul.listaDesplegable {
     display: block;
 }
 
 #contenedorPrincipal {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     max-width: 1400px;
     margin: 0 auto;
 }
 
 .contenedorTitulo {
-    border: 1px solid red;
-    grid-column: span 4;
+
+    grid-column: span 6;
     padding: 50px 0px 50px 0px;
     text-align: left;
 }
@@ -88,11 +122,323 @@ ul li:hover ul.menuDesplegable {
 }
 
 .contenedorProducto {
-    border: 1px solid yellow;
-    height:  400px;
+    overflow: hidden;
+    border: 1px solid white;
+    height:  500px;
+    margin: 20px;
+    border-radius: 5px;
 }
 
 .contenedorProducto img {
     width: 100%;
 }
 
+.contenedorProducto .stockProducto {
+    text-align: center;
+    margin: 20px 0px 5px 0px;
+    color: gray;
+}
+
+.contenedorProducto .precioProducto {
+    margin-top: 20px;
+    font-size: larger;
+    font-weight:900;
+}
+
+.botonAgregarAlCarrito {
+    padding: 5px 10px 5px 10px;
+    background-color: blueviolet;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.botonAgregarAlCarrito:hover {
+    background-color: rgb(161, 102, 218);
+}
+
+
+
+
+
+/*  -------------- Estilos del carrito */
+
+#contTextoAvisoCarritoVacio {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 370px;
+}
+
+.contenedorProductoEnCarrito {
+    border: 1px solid white;
+    display: flex;
+    margin: 10px 100px 0px 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 5px;
+    border-top: none;
+}
+
+.contenedorProductoEnCarrito .contImagen{
+    margin-right:15px;
+}
+
+.contenedorProductoEnCarrito .contImagen img {
+    max-width: 150px;
+}
+
+.contenedorProductoEnCarrito .contPrecio {
+    margin-left: auto;
+    width: 200px;
+}
+
+.contenedorProductoEnCarrito .botonesDescartarProducto {
+    padding: 5px;
+    background-color: blueviolet;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.contenedorProductoEnCarrito .botonesDescartarProducto:hover {
+    background-color: rgb(161, 102, 218);
+}
+
+#contenedorPrecioTotalCarrito {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 100px 0px 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 5px;
+}
+
+#contenedorPrecioTotalCarrito h2 {
+    margin-left: auto;
+    margin-bottom: 30px;
+}
+
+
+#botonPagarCarrito {
+    width: 200px;
+    padding: 10px;
+    background-color: blueviolet;
+    border: none;
+    border-radius: 5px;
+    font-size: larger;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#botonPagarCarrito:hover {
+    background-color: rgb(161, 102, 218);
+}
+
+
+
+
+/* ------------------------ estilos de la seccion pagar ------*/
+
+
+#contenedorForm *{
+    margin: 5px;
+}
+
+.mensajeDeError {
+
+    height: 20px;
+    width: 100%;
+    text-align: left;
+    color: red;
+}
+
+#contenedorForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0px 10px 0px;
+
+    align-self: center;
+    max-width: 700px;
+}
+
+#contenedorForm input {
+
+color: black;
+font-size: larger;
+}
+
+#contenedorForm input {
+    padding: 10px 10px 10px 10px;
+    border-radius: 2px;
+    border: none;
+}
+
+#ejemploTarjetas {
+    display: flex;
+
+}
+
+#ejemploTarjetasCredito, #ejemploTarjetasDebito {
+height: 0px;
+width: 0px;
+}
+
+#contenedorDatos {
+    margin: 20px 0px 20px 0px;
+    display: flex;
+    border: 2px solid violet;
+}
+
+#datosIzquierda, #datosDerecha {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#datosIzquierda {margin-right: 15px;}
+#datosDerecha {margin-left: 15px;}
+
+#nombre, #nroTarjeta {
+    width: 260px;
+}
+
+#datosFechaVencimiento, #datosCodigoSeguridad {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+#contInputMesVencimiento, #contInputAnioVencimiento {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#inputsVencimiento {
+
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#inputCodigoSeguridad {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+#inputsVencimiento input, #inputCodigoSeguridad input{
+    width: 100px;
+}
+
+#bontonContinuar {
+    font-size: larger;
+    align-self: flex-end;
+    width: 200px;
+    padding: 10px;
+    background-color: blueviolet;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#bontonContinuar:hover {
+    background-color: rgb(161, 102, 218);
+}
+
+#contInputMesVencimiento .mensajeDeError, #contInputAnioVencimiento .mensajeDeError {
+    width: 100px;
+    text-align:center;
+}
+
+#contenedorForm input.error {
+    border: 3px solid red;
+}
+
+
+
+
+/* ----------- seccion confirmacion de pago ---------------*/
+#contenedorBotonesConfirmacion {
+    margin-top: 50px;
+}
+
+.botonesConfirmacionPago {
+    font-size: larger;
+    width: 120px;
+    padding: 10px;
+    background-color: blueviolet;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.botonesConfirmacionPago:hover {
+    background-color: rgb(161, 102, 218);
+}
+
+#botonConfirmarPago {
+    margin-right: 10px;
+}
+
+#botonCancelarPago {
+    margin-left: 10px;
+}
+
+
+
+
+
+
+/* ---------------------seccion compra finalizada ------ */
+
+#contenedorCompraFinalizada {
+    height: 505px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#contenedorCompraFinalizada h1 {
+    margin-bottom: 70px;
+}
+
+#botonVolver {
+    font-size: larger;
+    width: 120px;
+    padding: 10px;
+    background-color: blueviolet;
+    border: none;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+#botonVolver:hover {
+    background-color: rgb(161, 102, 218);
+}
+
+
+
+
+/* ------------footer ---------*/
+
+footer {
+    height: 200px;
+    background-color: rgb(0, 0, 173);
+    margin-top: 100px;
+}
