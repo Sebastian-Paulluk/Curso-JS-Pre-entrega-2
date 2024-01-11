@@ -2,6 +2,8 @@ let carrito = [];
 let seccionActual = '';
 let temaActual = 'Claro';
 
+
+
 class Categoria {
     constructor(id, nombre, subCategorias){
         this.id = id;
@@ -31,6 +33,11 @@ class Producto {
 
 
 
+/* ------------------------ Categorias > subcategorias > productos ------------------- */
+
+// Se pueden agregar más modificando estos arrays
+
+
 
 const categorias = [
     new Categoria (100, "Hombre", []),
@@ -51,6 +58,9 @@ let subCategorias = [
 
 ];
 
+
+
+/* Coleccion de productos por defecto */
 let productos = [
     // ropa de hombre
     new Producto('_100', 103, 'BERMUDA DE GABARDINA "MATTHEW"', 5, 24200),
@@ -82,10 +92,17 @@ let productos = [
     new Producto('_124', 106, 'CARDIGAN PHILLIPHE LI', 2, 63600),
     new Producto('_125', 106, 'TRACKER BARIS SALIM', 5, 55400),
     new Producto('_126', 106, 'SWEATER LINDA SHINE', 8, 73000),
-
 ];
 
-function agregarSubcategoriaACategoria(subcategoria, categoria) {
+
+
+
+
+
+// --- Funciones para cargar las subcategorias a
+// --- sus respectivas categorias padre
+
+const agregarSubcategoriaACategoria = (subcategoria, categoria) =>{
     if (subcategoria.idCategoria === categoria.id) {
         categoria.subCategorias.push(subcategoria);
     };
@@ -99,7 +116,23 @@ categorias.forEach(categoria => {
 
 
 
+// --- Funciones auxiliares
 
+const obtenerPrecioTotalDelCarrito =()=> {
+    return carrito.reduce ((total, item) => {
+        const producto = buscarProductoPorId(item.id);
+        return total + (producto.precio * item.cantidad);
+    }, 0);
+};
+
+const buscarProductoPorId = id => {
+    const producto = productos.find( productoBuscado => productoBuscado.id === id);
+    return producto;
+};
+
+
+
+// --- Funciones auxilares para el contenedor principal
 
 const obtenerContenedorPrincipal = () => {
     return document.getElementById("contenedorPrincipal");
@@ -116,30 +149,18 @@ const agregarElementoAlContenedorPrincipal = elemento => {
 };
 
 
-const obtenerPrecioTotalDelCarrito =()=> {
-    return carrito.reduce ((total, item) => {
-        const producto = buscarProductoPorId(item.id);
-        return total + (producto.precio * item.cantidad);
-    }, 0);
-};
 
+// --- Funciones para mostrar u ocultar
+// --- la opcion de ordenar productos
 
-
-function buscarProductoPorId(id) {
-    const producto = productos.find( productoBuscado => productoBuscado.id === id);
-    return producto;
-};
-
-
-
-function ocultarOpcionesDeOrdenDeProductos() {
+const ocultarOpcionesDeOrdenDeProductos = function() {
     contItemsFiltros = document.getElementById("contItemsFiltros");
 
     contItemsFiltros.style.visibility = "hidden";
     contItemsFiltros.style.pointerEvents = "none";
 };
 
-function mostrarOpcionesDeOrdenDeProductos() {
+const mostrarOpcionesDeOrdenDeProductos = function() {
     contItemsFiltros = document.getElementById("contItemsFiltros");
 
     contItemsFiltros.style.visibility = "visible";
@@ -151,24 +172,20 @@ function mostrarOpcionesDeOrdenDeProductos() {
 
 
 
+// --------------------------------- Funciones para guardar y recuperar el carrito localmente ----------
 
 
 
-
-
-
-
-// ----------- Funciones para guardar y recuperar el carrito localmente ----------
-
-
-function recuperarCarritoDeCompras() {
+const recuperarCarritoDeCompras = function() {
     const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) {
+    // Si el array en localStorage existe, establecemos el array obtenido
+    // como nuestro array de carrito actual
+    if (carritoGuardado) {     
         carrito = JSON.parse(carritoGuardado);
     };
 };
 
-function guardarCarritoLocalmente() {
+const guardarCarritoLocalmente = function() {
     localStorage.setItem('carrito', JSON.stringify(carrito));
 };
 
@@ -177,18 +194,17 @@ function guardarCarritoLocalmente() {
 
 
 
+// --------------------------- Funciones para guardar y recuperar los productos de localStorage --------------------
 
 
 
-// ----------- Funciones para guardar y recuperar los productos localmente --------
-
-function agregarProductoASubcategoria(producto, subcategoria) {
+const agregarProductoASubcategoria = function(producto, subcategoria) {
     if (producto.idSubCategoria === subcategoria.id) {
         subcategoria.productos.push(producto);
     };
 };
 
-function cargarProductosASubcategorias() {
+const cargarProductosASubcategorias = function() {
     subCategorias.forEach(subcategoria => {
         productos.forEach(producto => {
             agregarProductoASubcategoria(producto, subcategoria);
@@ -196,30 +212,29 @@ function cargarProductosASubcategorias() {
     });
 }
 
+/* Recupera el array de productos de localStorage */
+const recuperarProductos = function() {
+    const productosRecuperados = localStorage.getItem('productos'); // Obtenemos el array de localStorage
 
-
-
-
-function recuperarProductos() {
-    const productosRecuperados = localStorage.getItem('productos');
-    if (productosRecuperados) {
+    // Si el array en localStorage existe, establecemos el array obtenido
+    // como nuestro array de productos actual, y cargarmos los productos
+    // a sus subcategorias correspondientes
+    if (productosRecuperados) { 
         productos = JSON.parse(productosRecuperados);
         cargarProductosASubcategorias();
     } else {
+    // Si el array en localStorage no existe, cargamos a la coleccion de
+    // productos de las subcategorias los productos por defecto
         cargarProductosASubcategorias();
     };
 
 };
 
-function guardarProductosLocalmente() {
+
+/* Guarda el array de productos en localStorage */
+const guardarProductosLocalmente = function() {
     localStorage.setItem('productos', JSON.stringify(productos));
 };
-
-
-
-
-
-
 
 
 
@@ -250,36 +265,34 @@ const cambiarTemaActual =()=> {
     };
 };
 
+/* Funcion para manejar el boton que cambia el tema (Claro/oscuro) de la pagina */
 const establecerComportamientoBotonTema = function () {
     const botonTema = document.getElementById("botonTema");
     botonTema.addEventListener("click", () => {
         
         cambiarTemaActual();
-        document.body.classList.toggle("temaOscuro");
+        // Añade la clase "temaOscuro" al body, la cual cambia su color fondo y de texto
+        document.body.classList.toggle("temaOscuro"); 
 
+        // Añade a todos los elementos de la pagina la clase "bordeTemaOscuro",
+        // la cual cambia su color de borde
         const todosLosElementos = document.querySelectorAll('*');
         todosLosElementos.forEach(elemento => {
             elemento.classList.toggle("bordeTemaOscuro");
         });
     });
-}
+};
 
 
 
 
 
 
+// ------------------------------ Funciones para generar finalizacion de la compra -----------------
 
 
 
-
-
-
-
-// ------------ Funciones para generar finalizacion de la compra -------
-
-
-function crearSeccionCompraFinalizada() {
+const crearSeccionCompraFinalizada = function() {
     vaciarContenedorPrincipal();
     vaciarCarrito();
 
@@ -287,11 +300,13 @@ function crearSeccionCompraFinalizada() {
     contenedorCompraFinalizada.id = "contenedorCompraFinalizada";
     contenedorCompraFinalizada.innerHTML ='<h1>¡Gracias por su compra!</h2>';
 
+    // Se crea el boton de "Volver" al finalizar la compra, el cual
+    // devuelve la pagina a la seccion de "todos los productos"
     const botonVolver = document.createElement("button");
     botonVolver.id = "botonVolver";
     botonVolver.innerText = "Volver";
     botonVolver.addEventListener("click", ()=> {
-        renderizarTodosLosProductos();
+        renderizarTodosLosProductos(); 
     });
 
     contenedorCompraFinalizada.appendChild(botonVolver);
@@ -304,20 +319,20 @@ function crearSeccionCompraFinalizada() {
 
 
 
-
-// ------------ Funciones para generar la seccion de pago -------------------------
-
+// --------------------------------- Funciones para generar la seccion de pago -------------------------
 
 
-function actualizarTextoCantidadItemsCarrito() {
-    /*  Se actualiza el texto de cantidad de items que se
+
+/*  Funcion para actualizar el texto de cantidad de items que se
     encuentra al lado del boton del carrito. */
+const actualizarTextoCantidadItemsCarrito = function() {
     const textoCantItemsEnCarrito = document.getElementById('textoCantItemsEnCarrito');
     textoCantItemsEnCarrito.innerText = `(${carrito.reduce((total, producto) => total + producto.cantidad, 0)})`;
 };
 
 const vaciarCarrito =()=> carrito.length = 0;
 
+/* Funcion para que, en caso de venta exitosa, se vacíe el carrito y se guarde localmente */
 const actualizarCarritoDeCompras =()=> {
     vaciarCarrito();
     guardarCarritoLocalmente();
@@ -348,6 +363,7 @@ const crearBotonCancelacionDePago =()=> {
     return botonCancelacionDePago;
 }
 
+/* Funcion para renderizar los botones de confirmación o cancelación de pago*/
 const crearBotonesConfirmacion =()=> {
     const contenedorBotonesConfirmacion = document.createElement("div");
     contenedorBotonesConfirmacion.id = "contenedorBotonesConfirmacion";
@@ -364,9 +380,14 @@ const crearTituloConfirmacionPago = () => {
     seccion.className = "contenedorTitulo"
     seccion.innerHTML = `<h2>Pago</h2><p>`;
 
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
+    establecerColorDeBordeDeElementoSegunTemaActivo(seccion);
+
     agregarElementoAlContenedorPrincipal(seccion);
 };
 
+/* Funcion que genera el contenedor con la pregunta de confirmacion de pago*/
 const crearConfirmacionDePago=(nroTarjeta)=>{
     const confirmacionDePago = document.createElement("div");
     confirmacionDePago.id ="contenedorConfirmacionPago";
@@ -375,6 +396,9 @@ const crearConfirmacionDePago=(nroTarjeta)=>{
         <h3 id="precioConfirmacion">Abona $ ${obtenerPrecioTotalDelCarrito().toLocaleString()}</h3>
         <h3 id="nroTarjetaConfirmacion">Con la tarjeta número ${nroTarjeta}</h3>
     `;
+
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(confirmacionDePago);
     agregarElementoAlContenedorPrincipal(confirmacionDePago);
 };
@@ -392,8 +416,10 @@ function crearSeccionConfirmacionDePago(nroTarjeta) {
 
 
 
-// ------------ Funciones para generar la seccion de pago -------------------------
+// -------------------------- Funciones para generar la seccion de pago -------------------------
 
+
+/* Funcion para obtener los valores ingresados en los inputs del form */
 const obtenerDatos =()=> {
     const inputNombre = document.getElementById("nombre");
     const inputNroTarjeta = document.getElementById("nroTarjeta");
@@ -401,7 +427,7 @@ const obtenerDatos =()=> {
     const inputAnioDeVencimiento = document.getElementById("anioDeVencimiento");
     const inputCodigoSeguridad = document.getElementById("codigoSeguridad");
 
-    const datos = [
+    const datos = [ // array con los valores
         inputNombre.value,
         inputNroTarjeta.value,
         inputMesDeVencimiento.value,
@@ -415,7 +441,8 @@ const obtenerDatos =()=> {
 
 // --------- Validaciones
 
-
+/* Funcion que genera el texto de aviso de error de validacion en los inputs ingresados
+   y les agrega la clase para que se muestre el borde rojo, por 3 segundos */
 const generarErrorDeValidacion =(input, span, textoDeError)=> {
     input.classList.add('error');
     span.innerText = textoDeError;
@@ -425,6 +452,9 @@ const generarErrorDeValidacion =(input, span, textoDeError)=> {
     }, 3000);
 }
 
+
+/* Funcion que valida que el codigo de seguridad de la tarjeta ingresada */
+// - La cantidad de carateres tiene que ser igual a 3
 const validarCodigoSeguridad =(valor)=> {
     datos = obtenerDatos()
     valor = datos[4];
@@ -438,6 +468,9 @@ const validarCodigoSeguridad =(valor)=> {
     };
 };
 
+
+/* Funcion que valida que el año de vencimiento de la tarjeta ingresado */
+// - El numero ingresado tiene que estar entre 1920 y 2006 
 const validarAnio =(valor)=> {
     valor = obtenerDatos()[3];
 
@@ -450,6 +483,9 @@ const validarAnio =(valor)=> {
     }
 };
 
+
+/* Funcion que valida que el mes de vencimiento de la tarjeta ingresado */
+// - El numero ingresado tiene que estar entre 1 y 12 
 const validarMes =(valor)=> {
     valor = obtenerDatos()[2];
 
@@ -462,6 +498,9 @@ const validarMes =(valor)=> {
     }
 };
 
+
+/* Funcion que valida que el numero de la tarjeta ingresada */
+// - La cantidad de carateres tiene que ser igual a 16 
 const validarTarjeta =(valor)=> {
     valor = obtenerDatos()[1];
 
@@ -474,6 +513,9 @@ const validarTarjeta =(valor)=> {
     }
 };
 
+
+/* Funcion que valida que el nombre ingresado */
+// - El input no puede estar vacio 
 const validarNombre =()=> {
     valor = obtenerDatos()[0];
 
@@ -487,7 +529,8 @@ const validarNombre =()=> {
 };
 
 
-
+    // Se crea el boton continuar de la seccion de pago, el cual envia a validar
+    // los datos ingresados en el form
 const crearBotonContinuar = () => {
     const botonContinuar = document.createElement("button");
     botonContinuar.id = "bontonContinuar";
@@ -839,13 +882,25 @@ function ordenarProductos(array) {
     };
 };
 
+/* Funcion para obtener el nombre de la categoria padre de una subcategoria */
+const obtenerNombreDeCategoriaPadre = function(subCategoria) {
+    let nombreCategoriaPadre = ""
+    categorias.forEach( categoria => {
+        if (categoria.id === subCategoria.idCategoria) {
+            nombreCategoriaPadre = categoria.nombre;
+        }
+    });
+    return nombreCategoriaPadre;
+};
+
 
 /* Funcion para crear y agregar el titulo de la seccion. */
 const crearTituloDeSeccion = function(seccionSeleccionada, contenedor) {
+    const nombreDeCategoriaPadre = obtenerNombreDeCategoriaPadre(seccionSeleccionada);
 
     const seccion = document.createElement("div");
     seccion.className = "contenedorTitulo"
-    seccion.innerHTML = `<h2>${seccionSeleccionada.nombre}</h2>`;
+    seccion.innerHTML = `<p>${nombreDeCategoriaPadre}<p><h2>${seccionSeleccionada.nombre}</h2>`;
 
     // En base al tema seleccionado (claro/oscuro), se añade
     // una clase al elemento para determinar el color de su borde
@@ -916,7 +971,7 @@ const renderizarSubcategoria = function(subCategoriaSeleccionada) {
 };
 
 
-const renderizarTodosLosProductos = function() {
+function renderizarTodosLosProductos() {
     seccionActual="Todos los productos";
     mostrarOpcionesDeOrdenDeProductos(); // Se hace visible la opcion de orden
     vaciarContenedorPrincipal();
