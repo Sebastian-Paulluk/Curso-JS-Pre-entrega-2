@@ -1,25 +1,28 @@
 let carrito = [];
 let seccionActual = '';
+let temaActual = 'Claro';
 
 class Categoria {
-    constructor(nombre, subCategorias){
-        this.nombre = nombre
-        this.subCategorias = subCategorias
+    constructor(id, nombre, subCategorias){
+        this.id = id;
+        this.nombre = nombre;
+        this.subCategorias = subCategorias;
     }
 };
 
 class Subcategoria {
-    constructor(categoria, nombre, productos){
-        this.categoria = categoria
-        this.nombre = nombre
-        this.productos = productos
+    constructor(id, idCategoria, nombre, productos){
+        this.id = id;
+        this.idCategoria = idCategoria;
+        this.nombre = nombre;
+        this.productos = productos;
     }
 };
 
 class Producto {
-    constructor(id, subCategoria, descripcion, stock, precio){
+    constructor(id, idSubCategoria, descripcion, stock, precio){
         this.id = id;
-        this.subCategoria = subCategoria;
+        this.idSubCategoria = idSubCategoria;
         this.descripcion = descripcion;
         this.stock = stock;
         this.precio = precio;
@@ -30,44 +33,60 @@ class Producto {
 
 
 const categorias = [
-    new Categoria ("Remeras", []),
-    new Categoria ("Pantalones", []),
-    new Categoria ("Bermudas", [])
+    new Categoria (100, "Hombre", []),
+    new Categoria (101, "Mujer", []),
 ];
 
 let subCategorias = [
-    //subcategorias de remeras
-    new Subcategoria ("Remeras", "Regular", []),
-    new Subcategoria ("Remeras", "Musculosa", []),
+    //subcategorias de ropa de hombre
+    new Subcategoria (100, 100, "Remeras", []),
+    new Subcategoria (101, 100, "Jeans", []),
+    new Subcategoria (102, 100, "Joggers", []),
+    new Subcategoria (103, 100, "Bermudas", []),
 
-    // subcategorias de pantalones
-    new Subcategoria ("Pantalones", "Jean", []),
-    new Subcategoria ("Pantalones", "Joggers", []),
+    //subcategorias de ropa de mujer
+    new Subcategoria (104, 101, "Camisas y tops", []),
+    new Subcategoria (105, 101, "Pantalones", []),
+    new Subcategoria (106, 101, "Sweaters y buzos", []),
 
-    // subcategorias de bermudas
-    new Subcategoria ("Bermudas", "Gabardina", []),
-    new Subcategoria ("Bermudas", "Tussor", []),
 ];
 
 let productos = [
-    new Producto('_100', "Gabardina", 'BERMUDA DE GABARDINA "MATTHEW"', 5, 24200),
-    new Producto('_101', "Gabardina", 'BERMUDA DE GABARDINA "LEMON"', 3, 25300),
-    new Producto('_102', "Regular", 'REMERA MAO "FAKE"', 2, 15700),
-    new Producto('_103', "Tussor", 'BERMUDA DE TUSSOR "TULUM"', 11, 22100),
-    new Producto('_104', "Jean", 'PANTALÓN DE JEAN SKINNY "FULL"', 3, 32200),
-    new Producto('_105', "Jean", 'PANTALÓN DE JEAN SKINNY "BLACKY"', 9, 28980),
-    new Producto('_106', "Regular", 'REMERA BÁSICA "PALAU"', 11, 13600),
-    new Producto('_107', "Regular", 'REMERA "OWN"', 7, 12900),
-    new Producto('_108', "Regular", 'REMERA "OCEAN"', 4, 15000),
-    new Producto('_109', "Joggers", 'PANTALÓN JOGGER CARGO "NIZA"', 6, 34500),
-    new Producto('_110', "Joggers", 'PANTALÓN JOGGER DE JEAN "BRIGHT"', 5, 36800),
-    new Producto('_111', "Musculosa", 'MUSCULOSA "SAND"', 7, 11100),
-    new Producto('_112', "Musculosa", 'MUSCULOSA "CHAIR"', 10, 11000),
-    new Producto('_113', "Musculosa", 'MUSCULOSA "NBA"', 4, 9900),
+    // ropa de hombre
+    new Producto('_100', 103, 'BERMUDA DE GABARDINA "MATTHEW"', 5, 24200),
+    new Producto('_101', 103, 'BERMUDA DE GABARDINA "LEMON"', 3, 25300),
+    new Producto('_102', 100, 'REMERA MAO "FAKE"', 2, 15700),
+    new Producto('_103', 103, 'BERMUDA DE TUSSOR "TULUM"', 11, 22100),
+    new Producto('_104', 101, 'PANTALÓN DE JEAN SKINNY "FULL"', 3, 32200),
+    new Producto('_105', 101, 'PANTALÓN DE JEAN SKINNY "BLACKY"', 9, 28980),
+    new Producto('_106', 100, 'REMERA BÁSICA "PALAU"', 11, 13600),
+    new Producto('_107', 100, 'REMERA "OWN"', 7, 12900),
+    new Producto('_108', 100, 'REMERA "OCEAN"', 4, 15000),
+    new Producto('_109', 102, 'PANTALÓN JOGGER CARGO "NIZA"', 6, 34500),
+    new Producto('_110', 102, 'PANTALÓN JOGGER DE JEAN "BRIGHT"', 5, 36800),
+    new Producto('_111', 100, 'MUSCULOSA "SAND"', 7, 11100),
+    new Producto('_112', 100, 'MUSCULOSA "CHAIR"', 10, 11000),
+    new Producto('_113', 100, 'MUSCULOSA "NBA"', 4, 9900),
+
+    //ropa de mujer
+    new Producto('_114', 104, 'TOP AMBER LAOS', 6, 55800),
+    new Producto('_115', 104, 'CAMISA SPOT', 3, 50700),
+    new Producto('_116', 104, 'TOP LUIGIANA I', 10, 47990),
+    new Producto('_117', 104, 'TOP MOSS BASIC', 3, 27490),
+    new Producto('_118', 104, 'CAMISA HALEY RIBBON', 9, 65000),
+    new Producto('_119', 105, 'PANTALON THELMA', 4, 85500),
+    new Producto('_120', 105, 'PANTALON ELENA CARGO', 12, 48300),
+    new Producto('_121', 105, 'PANTALON CLEO ARMY', 9, 76450),
+    new Producto('_122', 105, 'PANTALON ALLY SUMMER', 6, 55900),
+    new Producto('_123', 106, 'SWEATER ROSS SUMMER LI', 7, 37300),
+    new Producto('_124', 106, 'CARDIGAN PHILLIPHE LI', 2, 63600),
+    new Producto('_125', 106, 'TRACKER BARIS SALIM', 5, 55400),
+    new Producto('_126', 106, 'SWEATER LINDA SHINE', 8, 73000),
+
 ];
 
 function agregarSubcategoriaACategoria(subcategoria, categoria) {
-    if (subcategoria.categoria === categoria.nombre) {
+    if (subcategoria.idCategoria === categoria.id) {
         categoria.subCategorias.push(subcategoria);
     };
 };
@@ -130,6 +149,15 @@ function mostrarOpcionesDeOrdenDeProductos() {
 
 
 
+
+
+
+
+
+
+
+
+
 // ----------- Funciones para guardar y recuperar el carrito localmente ----------
 
 
@@ -147,10 +175,15 @@ function guardarCarritoLocalmente() {
 
 
 
+
+
+
+
+
 // ----------- Funciones para guardar y recuperar los productos localmente --------
 
 function agregarProductoASubcategoria(producto, subcategoria) {
-    if (producto.subCategoria === subcategoria.nombre) {
+    if (producto.idSubCategoria === subcategoria.id) {
         subcategoria.productos.push(producto);
     };
 };
@@ -163,6 +196,10 @@ function cargarProductosASubcategorias() {
     });
 }
 
+
+
+
+
 function recuperarProductos() {
     const productosRecuperados = localStorage.getItem('productos');
     if (productosRecuperados) {
@@ -171,11 +208,62 @@ function recuperarProductos() {
     } else {
         cargarProductosASubcategorias();
     };
+
 };
 
 function guardarProductosLocalmente() {
     localStorage.setItem('productos', JSON.stringify(productos));
 };
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------- Funciones para manejar el cambio de tema ---------- //
+
+
+
+const establecerColorDeTextoDeElementoSegunTemaActivo = elemento => {
+    if (temaActual === "Oscuro") {
+        elemento.classList.toggle("textoTemaOscuro");
+    };
+};
+
+const establecerColorDeBordeDeElementoSegunTemaActivo = elemento => {
+    if (temaActual === "Oscuro") {
+        elemento.classList.toggle("bordeTemaOscuro");
+    };
+};
+
+const cambiarTemaActual =()=> {
+    if (temaActual === "Claro") {
+        temaActual = "Oscuro";
+    } else {
+        temaActual = "Claro";
+    };
+};
+
+const establecerComportamientoBotonTema = function () {
+    const botonTema = document.getElementById("botonTema");
+    botonTema.addEventListener("click", () => {
+        
+        cambiarTemaActual();
+        document.body.classList.toggle("temaOscuro");
+
+        const todosLosElementos = document.querySelectorAll('*');
+        todosLosElementos.forEach(elemento => {
+            elemento.classList.toggle("bordeTemaOscuro");
+        });
+    });
+}
+
 
 
 
@@ -207,7 +295,7 @@ function crearSeccionCompraFinalizada() {
     });
 
     contenedorCompraFinalizada.appendChild(botonVolver);
-
+    
     agregarElementoAlContenedorPrincipal(contenedorCompraFinalizada);    
 };
 
@@ -287,7 +375,7 @@ const crearConfirmacionDePago=(nroTarjeta)=>{
         <h3 id="precioConfirmacion">Abona $ ${obtenerPrecioTotalDelCarrito().toLocaleString()}</h3>
         <h3 id="nroTarjetaConfirmacion">Con la tarjeta número ${nroTarjeta}</h3>
     `;
-
+    establecerColorDeBordeDeElementoSegunTemaActivo(confirmacionDePago);
     agregarElementoAlContenedorPrincipal(confirmacionDePago);
 };
 
@@ -324,6 +412,8 @@ const obtenerDatos =()=> {
     return datos;
 }
 
+
+// --------- Validaciones
 
 
 const generarErrorDeValidacion =(input, span, textoDeError)=> {
@@ -467,6 +557,7 @@ const crearFormDeDatosDelPago = () => {
     </div>
     `;
 
+    establecerColorDeBordeDeElementoSegunTemaActivo(contenedorForm);
     agregarElementoAlContenedorPrincipal(contenedorForm);
 };
 
@@ -475,6 +566,7 @@ const crearTituloSeccionPago = () => {
     seccion.className = "contenedorTitulo"
     seccion.innerHTML = `<h2>Pago</h2><p>`;
 
+    establecerColorDeBordeDeElementoSegunTemaActivo(seccion);
     agregarElementoAlContenedorPrincipal(seccion);
 };
 
@@ -600,6 +692,8 @@ function renderizarProductoEnCarrito(productoEnCarrito, contenedor) {
             <p class"subtotalProductoCarrito>Subtotal: $ ${(producto.precio*carrito[indiceDelProductoEnElCarrito].cantidad).toLocaleString()}</p>
         </div>`;
 
+    establecerColorDeBordeDeElementoSegunTemaActivo(contenedorProductoEnCarrito);
+
     contenedor.appendChild(contenedorProductoEnCarrito);
 
     const botonDescartarProducto = document.createElement("button");
@@ -613,6 +707,9 @@ function renderizarProductoEnCarrito(productoEnCarrito, contenedor) {
     contPrecioProducto.appendChild(botonDescartarProducto);
 };
 
+
+
+
 function mostrarProductosEnCarrito() {
     const contenedorPrincipal = obtenerContenedorPrincipal();
 
@@ -620,6 +717,9 @@ function mostrarProductosEnCarrito() {
             renderizarProductoEnCarrito(producto, contenedorPrincipal);
     });
 };
+
+
+
 
 function mostrarPrecioTotalEnCarrito() {
     const contenedorPrecioTotalCarrito = document.createElement("div");
@@ -631,6 +731,9 @@ function mostrarPrecioTotalEnCarrito() {
 
     agregarElementoAlContenedorPrincipal(contenedorPrecioTotalCarrito);
 };
+
+
+
 
 function crearBotonPagarEnCarrito() {
     const botonPagarCarrito = document.createElement("button");
@@ -645,6 +748,9 @@ function crearBotonPagarEnCarrito() {
 };
 
 
+
+
+
 function mostrarAvisoDeCarritoVacio() {
     const avisoDeCarritoVacio = document.createElement("div");
     avisoDeCarritoVacio.id = "contTextoAvisoCarritoVacio";
@@ -652,6 +758,9 @@ function mostrarAvisoDeCarritoVacio() {
 
     agregarElementoAlContenedorPrincipal(avisoDeCarritoVacio);
 };
+
+
+
 
 function comprobarSiHayProductosEnElCarrito() {
     if (carrito.length > 0) {
@@ -663,6 +772,8 @@ function comprobarSiHayProductosEnElCarrito() {
     };
 };
 
+
+
 function renderizarCarritoDeCompras() {
     vaciarContenedorPrincipal();
     ocultarOpcionesDeOrdenDeProductos();
@@ -670,10 +781,12 @@ function renderizarCarritoDeCompras() {
     contenedorPrincipal.style.display ="flex"
     contenedorPrincipal.style.flexDirection = "column"
 
-    const seccion = document.createElement("div");
-    seccion.className = "contenedorTitulo"
-    seccion.innerHTML = `<h2>Carrito</h2><p>`;
-    agregarElementoAlContenedorPrincipal(seccion);
+    const TituloSeccion = document.createElement("div");
+    TituloSeccion.className = "contenedorTitulo"
+    TituloSeccion.innerHTML = `<h2>Carrito</h2><p>`;
+
+    establecerColorDeBordeDeElementoSegunTemaActivo(TituloSeccion);
+    agregarElementoAlContenedorPrincipal(TituloSeccion);
 
     comprobarSiHayProductosEnElCarrito();
 };
@@ -734,6 +847,8 @@ function crearTituloDeSeccion(seccionSeleccionada, contenedor) {
     const seccion = document.createElement("div");
     seccion.className = "contenedorTitulo"
     seccion.innerHTML = `<h2>${seccionSeleccionada.nombre}</h2>`;
+
+    establecerColorDeBordeDeElementoSegunTemaActivo(seccion);
     contenedor.appendChild(seccion);
 };
 
@@ -770,6 +885,9 @@ function renderizarProducto(producto, contenedor) {
         <p class="precioProducto">$ ${producto.precio.toLocaleString()}</p>
         <p class="stockProducto">Stock: ${producto.stock}</p>
     `;
+
+    establecerColorDeBordeDeElementoSegunTemaActivo(productoAAgregar);
+
     contenedor.appendChild(productoAAgregar);
     renderizarBotonAgregarAlCarrito(producto);
 };
@@ -805,6 +923,13 @@ function renderizarTodosLosProductos() {
     vaciarContenedorPrincipal();
     contenedorPrincipal.style.display ="grid";
     mostrarOpcionesDeOrdenDeProductos();
+
+    const TituloSeccion = document.createElement("div");
+    TituloSeccion.className = "contenedorTitulo"
+    TituloSeccion.innerHTML = `<h2>Todos los productos</h2><p>`;
+    
+    establecerColorDeBordeDeElementoSegunTemaActivo(TituloSeccion);
+    agregarElementoAlContenedorPrincipal(TituloSeccion);
 
     ordenarProductos(productos);
     productos.forEach( producto => {
@@ -931,6 +1056,8 @@ function establecerComportamientoCategoriasDelNav(){
     });
 };
 
+
+
 function generarYEstablecerComportamientoDelNav() {
     crearNav();
     establecerComportamientoDeOpcionesDeOrdenDeProducto();
@@ -941,6 +1068,7 @@ function generarYEstablecerComportamientoDelNav() {
 function correrApp() {
     recuperarProductos();
     recuperarCarritoDeCompras();
+    establecerComportamientoBotonTema();
     generarYEstablecerComportamientoDelNav();
     actualizarTextoCantidadItemsCarrito();
     renderizarTodosLosProductos();
