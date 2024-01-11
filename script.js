@@ -557,8 +557,11 @@ const crearFormDeDatosDelPago = () => {
     </div>
     `;
 
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(contenedorForm);
-    agregarElementoAlContenedorPrincipal(contenedorForm);
+
+    agregarElementoAlContenedorPrincipal(contenedorForm); // Se agrega al DOM el form
 };
 
 const crearTituloSeccionPago = () => {
@@ -566,16 +569,15 @@ const crearTituloSeccionPago = () => {
     seccion.className = "contenedorTitulo"
     seccion.innerHTML = `<h2>Pago</h2><p>`;
 
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(seccion);
-    agregarElementoAlContenedorPrincipal(seccion);
+
+    agregarElementoAlContenedorPrincipal(seccion); // Se agrega al DOM el contenedor con el titulo
 };
 
 
 function renderizarSeccionPago() {
-/*     const ContenedorPrincipal = obtenerContenedorPrincipal();
-    ContenedorPrincipal.style.display ="flex"
-    ContenedorPrincipal.style.flexDirection = "column" */
-
     vaciarContenedorPrincipal();
     crearTituloSeccionPago();
     crearFormDeDatosDelPago();
@@ -587,35 +589,29 @@ function renderizarSeccionPago() {
 
 
 
+// ----------------------------- Funciones para agregar productos al carrito --------------------
 
 
 
-// ------------ Funciones para agregar productos al carrito --------------------
+const descontarStockDelProducto = producto => producto.stock -= 1;
 
-function descontarStockDelProducto(producto) {
-    producto.stock -= 1;
-};
 
+/* Funcion para actualizar el texto de cantidad de stock restante del producto que
+se acaba de agregar al carrito de compras. */
 function actualizarStockDelProductoEnElDOM(producto) {
-    /* Se actualiza el texto de cantidad de stock restante del
-    producto que se acaba de agregar al carrito de compras. */
     const TextoDeStockAtualDelProducto = document.querySelector(`#${producto.id} .stockProducto`);
     TextoDeStockAtualDelProducto.innerText = `Stock: ${producto.stock}`;
 };
 
 
-
-function agregarProductoACarrito(producto) {
-    /*  Se obtiene el indice el producto seleccionado,
-    en el array del carrito de compras. */
+const agregarProductoACarrito = function(producto) {
+    //Se obtiene el indice el producto seleccionado, en el array del carrito de compras
     const indiceDelProducto = carrito.findIndex (item => item.id === producto.id);
 
     if (indiceDelProducto !== -1) {
-    /* Si se encuentra el producto en el carrito, se aumenta su cantidad. */
-        carrito[indiceDelProducto].cantidad += 1; 
+        carrito[indiceDelProducto].cantidad += 1; // Si se encuentra el producto en el carrito, se aumenta su cantidad
     } else {
-    /* Se no se encuentra el producto en el carrito, se agrega. */
-        carrito.push({id: producto.id, cantidad: 1});
+        carrito.push({id: producto.id, cantidad: 1}); //Se no se encuentra el producto en el carrito, se agrega
     }
 
     descontarStockDelProducto(producto);
@@ -623,10 +619,10 @@ function agregarProductoACarrito(producto) {
     guardarCarritoLocalmente();
     guardarProductosLocalmente();
     actualizarTextoCantidadItemsCarrito();
-
 };
 
-function comprobarSiHayStockParaAgregarAlCarrito(producto) {
+
+const comprobarSiHayStockParaAgregarAlCarrito = producto => {
     if (producto.stock > 0) {
         agregarProductoACarrito(producto);
     };
@@ -637,8 +633,8 @@ function comprobarSiHayStockParaAgregarAlCarrito(producto) {
 
 
 
+// ----------------------- Funciones para descartar productos del carrito ------------------
 
-// ------------ Funciones para descartar productos del carrito ------------------
 
 
 const devolverStockAProducto = function(producto, cantidad) {
@@ -648,6 +644,8 @@ const devolverStockAProducto = function(producto, cantidad) {
 const quitarProductoDelCarrito = function(producto){
     const indiceDelProductoADescartar = carrito.findIndex(item => item.id === producto.id);
 
+    // Si se encuentra el producto en el carrito, se devuelve la cantidad del producto
+    // al stock del mismo, y luego se remueve del carrito
     if (indiceDelProductoADescartar !== -1) {
         devolverStockAProducto(producto, carrito[indiceDelProductoADescartar].cantidad);
         carrito.splice(indiceDelProductoADescartar, 1);
@@ -656,7 +654,7 @@ const quitarProductoDelCarrito = function(producto){
 
 const descartarProductoDelCarrito = function(producto){
     quitarProductoDelCarrito(producto);
-    actualizarTextoCantidadItemsCarrito();
+    actualizarTextoCantidadItemsCarrito(); 
     guardarCarritoLocalmente();
     renderizarCarritoDeCompras();
 };
@@ -666,17 +664,16 @@ const descartarProductoDelCarrito = function(producto){
 
 
 
-
-
-// ------------ Funciones para generar el carrito -----------------------------------
-
+// -------------------- Funciones para generar el carrito -----------------------------------
 
 
 
-function renderizarProductoEnCarrito(productoEnCarrito, contenedor) {
+const renderizarProductoEnCarrito = function(productoEnCarrito, contenedor) {
     const producto = buscarProductoPorId(productoEnCarrito.id);
     const indiceDelProductoEnElCarrito = carrito.findIndex (item => item.id === producto.id);
 
+    // Se genera el codigo para para el DOM del producto del carrito, 
+    // con su imagen, precio, cantidad y subtotal
     const contenedorProductoEnCarrito = document.createElement("div");
     contenedorProductoEnCarrito.className = "contenedorProductoEnCarrito";
     contenedorProductoEnCarrito.innerHTML = `
@@ -692,10 +689,13 @@ function renderizarProductoEnCarrito(productoEnCarrito, contenedor) {
             <p class"subtotalProductoCarrito>Subtotal: $ ${(producto.precio*carrito[indiceDelProductoEnElCarrito].cantidad).toLocaleString()}</p>
         </div>`;
 
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(contenedorProductoEnCarrito);
 
     contenedor.appendChild(contenedorProductoEnCarrito);
 
+    // Se genera el boton para descartar el producto del carrito
     const botonDescartarProducto = document.createElement("button");
     botonDescartarProducto.className = "botonesDescartarProducto";
     botonDescartarProducto.innerText = "Descartar";
@@ -704,24 +704,22 @@ function renderizarProductoEnCarrito(productoEnCarrito, contenedor) {
     });
 
     const contPrecioProducto = document.getElementById(`contenedorPrecio${producto.id}`);
+    // Se agrega el boton al contenedor del producto
     contPrecioProducto.appendChild(botonDescartarProducto);
 };
 
 
-
-
-function mostrarProductosEnCarrito() {
+const mostrarProductosEnCarrito = function() {
     const contenedorPrincipal = obtenerContenedorPrincipal();
 
+    // Se renderiza cada uno de los productos del carrito
     carrito.forEach(producto => {
             renderizarProductoEnCarrito(producto, contenedorPrincipal);
     });
 };
 
 
-
-
-function mostrarPrecioTotalEnCarrito() {
+const mostrarPrecioTotalEnCarrito = function() {
     const contenedorPrecioTotalCarrito = document.createElement("div");
     contenedorPrecioTotalCarrito.id = "contenedorPrecioTotalCarrito";
 
@@ -733,12 +731,11 @@ function mostrarPrecioTotalEnCarrito() {
 };
 
 
-
-
-function crearBotonPagarEnCarrito() {
+const crearBotonPagarEnCarrito = function() {
     const botonPagarCarrito = document.createElement("button");
     botonPagarCarrito.id="botonPagarCarrito";
     botonPagarCarrito.innerText= "Pagar";
+
     botonPagarCarrito.addEventListener("click", () => {
         renderizarSeccionPago();
     });
@@ -748,10 +745,8 @@ function crearBotonPagarEnCarrito() {
 };
 
 
-
-
-
-function mostrarAvisoDeCarritoVacio() {
+/* Funcion para mostrar aviso de que el carrito de compras no contiene productos */
+const mostrarAvisoDeCarritoVacio = function() {
     const avisoDeCarritoVacio = document.createElement("div");
     avisoDeCarritoVacio.id = "contTextoAvisoCarritoVacio";
     avisoDeCarritoVacio.innerHTML = '<h2>No hay productos en el carrito</h2>';
@@ -760,9 +755,8 @@ function mostrarAvisoDeCarritoVacio() {
 };
 
 
-
-
-function comprobarSiHayProductosEnElCarrito() {
+const comprobarSiHayProductosEnElCarrito = function() {
+    // Si el carrito tiene productos, se renderizan en el DOM
     if (carrito.length > 0) {
         mostrarProductosEnCarrito();
         mostrarPrecioTotalEnCarrito();
@@ -773,11 +767,12 @@ function comprobarSiHayProductosEnElCarrito() {
 };
 
 
-
 function renderizarCarritoDeCompras() {
-    vaciarContenedorPrincipal();
-    ocultarOpcionesDeOrdenDeProductos();
 
+    vaciarContenedorPrincipal();
+    ocultarOpcionesDeOrdenDeProductos(); 
+
+    const contenedorPrincipal = obtenerContenedorPrincipal();
     contenedorPrincipal.style.display ="flex"
     contenedorPrincipal.style.flexDirection = "column"
 
@@ -785,7 +780,10 @@ function renderizarCarritoDeCompras() {
     TituloSeccion.className = "contenedorTitulo"
     TituloSeccion.innerHTML = `<h2>Carrito</h2><p>`;
 
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(TituloSeccion);
+
     agregarElementoAlContenedorPrincipal(TituloSeccion);
 
     comprobarSiHayProductosEnElCarrito();
@@ -794,12 +792,15 @@ function renderizarCarritoDeCompras() {
 
 
 
-// -------------- Funciones para generar el contenido de las categorias ---------
 
 
-// Funciones para ordenar los productos
+// -------------- Funciones para generar el contenido de las categorias -----------------
+
+
+
 const obtenerIDEnNumero = producto => parseInt(producto.id.slice(1));
 
+/* Funciones para establecer el orden de los productos en su array */
 function ordenarPorID(array) {
     array.sort((item1, item2) => obtenerIDEnNumero(item1) - obtenerIDEnNumero(item2));
 };
@@ -816,6 +817,8 @@ function ordenarPorMayorPrecio(array) {
     array.sort((item1, item2) => item2.precio - item1.precio);
 };
 
+
+/* Funcion para obtener la seleccion de orden de los productos desde el DOM */
 function ordenarProductos(array) {
     const objetoOrden = document.getElementById('orden');
     const opcionSeleccionada = objetoOrden.value;
@@ -837,25 +840,23 @@ function ordenarProductos(array) {
 };
 
 
-
-
-
-
 /* Funcion para crear y agregar el titulo de la seccion. */
-function crearTituloDeSeccion(seccionSeleccionada, contenedor) {
+const crearTituloDeSeccion = function(seccionSeleccionada, contenedor) {
 
     const seccion = document.createElement("div");
     seccion.className = "contenedorTitulo"
     seccion.innerHTML = `<h2>${seccionSeleccionada.nombre}</h2>`;
 
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(seccion);
-    contenedor.appendChild(seccion);
+
+    contenedor.appendChild(seccion);  // Se agrega al DOM el contenedor con el titulo
 };
 
 
+const renderizarBotonAgregarAlCarrito = function(producto) {
 
-// funcion para crear y agregar el boton de agregar el carrito en un producto
-function renderizarBotonAgregarAlCarrito(producto) {
     const botonAgregarAlCarrito = document.createElement("button");
     botonAgregarAlCarrito.className = "botonAgregarAlCarrito";
     botonAgregarAlCarrito.innerText = "Agregar al carrito";
@@ -869,74 +870,81 @@ function renderizarBotonAgregarAlCarrito(producto) {
 };
 
 
+const renderizarProducto = function(producto, contenedor) {
 
-
-
-// funcion para crear y agregar la imagen, precio y descpripcion
-function renderizarProducto(producto, contenedor) {
-
-
+    // Se genera el contenedor del producto y dentro de él,
+    // la imagen, descripcion, precio y stock
     const productoAAgregar = document.createElement("div");
     productoAAgregar.className = "contenedorProducto";
     productoAAgregar.id = `${producto.id}`;
     productoAAgregar.innerHTML =`
-        <img src="./assets/imgs_productos/${producto.id}.png">
+        <img src="./assets/imgs_productos/${producto.id}.png"> 
         <p class="descripcionProducto">${producto.descripcion}</p>
         <p class="precioProducto">$ ${producto.precio.toLocaleString()}</p>
         <p class="stockProducto">Stock: ${producto.stock}</p>
     `;
 
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(productoAAgregar);
 
-    contenedor.appendChild(productoAAgregar);
+    contenedor.appendChild(productoAAgregar); // Se agrega al DOM el contenedor con el producto
+
+    // Se agrega en boton para agregar al carrito el producto
     renderizarBotonAgregarAlCarrito(producto);
 };
 
 
-
-
-
-
-
-function renderizarSubcategoria(subCategoriaSeleccionada) {
+const renderizarSubcategoria = function(subCategoriaSeleccionada) {
     seccionActual=`${subCategoriaSeleccionada.nombre}`;
     const contenedorPrincipal = obtenerContenedorPrincipal();
     
     vaciarContenedorPrincipal();
     contenedorPrincipal.style.display ="grid";
-    mostrarOpcionesDeOrdenDeProductos();
+    mostrarOpcionesDeOrdenDeProductos(); // Se hace visible la opcion de orden
 
-    crearTituloDeSeccion(subCategoriaSeleccionada, contenedorPrincipal);
+    crearTituloDeSeccion(subCategoriaSeleccionada, contenedorPrincipal); // Se agrega al DOM el titulo de la seccion
 
+    // Antes de renderizar los productos, se ordena la ubicacion de cada uno
+    // en el array de productos en base al orden seleccionado
     ordenarProductos(subCategoriaSeleccionada.productos);
+
+    // Se renderiza cada producto de la categoria seleccionada
     subCategoriaSeleccionada.productos.forEach( producto => {
         renderizarProducto(producto, contenedorPrincipal);
     });
 };
 
 
-
-function renderizarTodosLosProductos() {
+const renderizarTodosLosProductos = function() {
     seccionActual="Todos los productos";
-    const contenedorPrincipal = obtenerContenedorPrincipal();
-
+    mostrarOpcionesDeOrdenDeProductos(); // Se hace visible la opcion de orden
     vaciarContenedorPrincipal();
-    contenedorPrincipal.style.display ="grid";
-    mostrarOpcionesDeOrdenDeProductos();
 
+    const contenedorPrincipal = obtenerContenedorPrincipal();
+    contenedorPrincipal.style.display ="grid";
+    vaciarContenedorPrincipal();
+
+    // Se genera el titulo de la seccion
     const TituloSeccion = document.createElement("div");
     TituloSeccion.className = "contenedorTitulo"
     TituloSeccion.innerHTML = `<h2>Todos los productos</h2><p>`;
     
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(TituloSeccion);
+
+    // Se agrega al DOM el titulo de la seccion
     agregarElementoAlContenedorPrincipal(TituloSeccion);
 
+    // Antes de renderizar los productos, se ordena la ubicacion de cada uno
+    // en el array de productos en base al orden seleccionado
     ordenarProductos(productos);
+
+    // Se renderizan todos los productos
     productos.forEach( producto => {
         renderizarProducto(producto, contenedorPrincipal);
     });
-
-
 };
 
 
@@ -944,56 +952,55 @@ function renderizarTodosLosProductos() {
 
 
 
+// -------------------------- Funciones para crear el nav ---------------------------- 
 
 
-
-
-// -------------- Funciones para crear el nav ----------------------------
 
 const ordenarPorNombreAlfabeticamente = unArray => {
     unArray.sort((item1, item2) => item1.nombre.localeCompare(item2.nombre));
 };
 
+
 const cantidadDeSubcategorias = unaCategoria => unaCategoria.subCategorias.length
 
-function crearNav() {
-    //se obtiene el contenedor de las categorias del dom
-    const listaCategorias = document.getElementById("listaCategorias");
 
-    ordenarPorNombreAlfabeticamente(categorias);
-
-    //por cada categoria se crea un item con su nombre
+const crearNav = function() {
+    // Por cada categoria se crea un item 
     categorias.forEach( categoria => {
         const categoriaAAgregar = document.createElement("li");
         categoriaAAgregar.className = "categoriaNav";
         categoriaAAgregar.innerHTML = categoria.nombre
 
-        // si la categoria tiene subcategorias, se generan 
+        // Si la categoria tiene subcategorias, se generan 
         if (cantidadDeSubcategorias(categoria) > 0) {
 
-            const subLista = document.createElement("ul");
+            const subLista = document.createElement("ul"); // Lista que contendra las subcategorias
             subLista.className = "listaDesplegable";   
             
             ordenarPorNombreAlfabeticamente(categoria.subCategorias);
-
+            
+            // Por cada categoria se crea un item
             categoria.subCategorias.forEach( subCategoria => {
                 const subCategoriaAAgregar = document.createElement("li");
-                subCategoriaAAgregar.className = "subCatergoriaNav";
+                subCategoriaAAgregar.className = "subCategoriaNav";
                 subCategoriaAAgregar.innerHTML = subCategoria.nombre;
 
-                subLista.appendChild(subCategoriaAAgregar);
+                subLista.appendChild(subCategoriaAAgregar); 
             });
 
-            //Se insertan las subcategorias dentro de la categoria  correspondiente
             categoriaAAgregar.appendChild(subLista);
         }; 
 
-        // se añade la categoria al contenedor 
+        // Se agrega la categoria al contenedor 
+        const listaCategorias = document.getElementById("listaCategorias");
         listaCategorias.appendChild(categoriaAAgregar);
     });
 };
 
-function obtenerSeccionActual() {
+
+/* Se obtiene la seccion actual, a fin de poder renderizarla nuevamente
+cuando se cambia el orden de los productos mostrados */
+const obtenerSeccionActual = function() {
     let seccionARenderizar = "Todos los productos";
 
     subCategorias.forEach( subcategoria =>{
@@ -1004,10 +1011,13 @@ function obtenerSeccionActual() {
     return seccionARenderizar;
 };
 
-function establecerComportamientoDeOpcionesDeOrdenDeProducto() {
+
+/* Se establece la accion del cambio de opcion seleccionada del select 
+del DOM, el cual establece el orden de los productos mostrados */
+const establecerComportamientoDeOpcionesDeOrdenDeProducto = function() {
     const objetoOpciones = document.getElementById("orden");
+
     objetoOpciones.addEventListener("change", () =>{
-        
         const seccionActual = obtenerSeccionActual();
 
         if (seccionActual === "Todos los productos") {
@@ -1018,7 +1028,10 @@ function establecerComportamientoDeOpcionesDeOrdenDeProducto() {
     })
 }
 
-function establecerComportamientoBotonMostrarTodos() {
+
+/* Se establece la renderizacion de todos los productos en el DOM
+cuando se hace click en boton "Todos los productos" del nav */
+const establecerComportamientoBotonMostrarTodos = function() {
     const botonMostrarTodos = document.getElementById("botonMostrarTodos");
 
     botonMostrarTodos.addEventListener("click", ()=> {
@@ -1026,21 +1039,29 @@ function establecerComportamientoBotonMostrarTodos() {
     });
 };
 
-function establecerComportamientoBotonCarrito() {
+
+/* Se establece la renderizacin del carrito de compras en el DOM
+cuando se hace click en boton del carrito del nav */
+const establecerComportamientoBotonCarrito = function() {
     const botonCarrito = document.getElementById("botonCarrito");
+
     botonCarrito.addEventListener("click", ()=> {
         renderizarCarritoDeCompras();
     });
 };
 
 
-function establecerComportamientoCategoriasDelNav(){
+
+const establecerComportamientoCategoriasDelNav = function(){
 
     establecerComportamientoBotonMostrarTodos();
 
-    const subcategoriasNavColeccion = document.getElementsByClassName("subCatergoriaNav");
+/*  Se obtienen del DOM las subcategorias del nav */
+    const subcategoriasNavColeccion = document.getElementsByClassName("subCategoriaNav");
     const subcategoriasNav = Array.from(subcategoriasNavColeccion);
-    
+
+/*  Por cada una, se programa la accion de click para renderizar en el DOM
+    la subcategoria seleccionada */
     subcategoriasNav.forEach( item => {
         const nombreItem = item.innerText;
 
@@ -1057,15 +1078,15 @@ function establecerComportamientoCategoriasDelNav(){
 };
 
 
-
-function generarYEstablecerComportamientoDelNav() {
+const generarYEstablecerComportamientoDelNav = function() {
     crearNav();
     establecerComportamientoDeOpcionesDeOrdenDeProducto();
     establecerComportamientoCategoriasDelNav();
     establecerComportamientoBotonCarrito();
 }
 
-function correrApp() {
+
+const correrApp = function() {
     recuperarProductos();
     recuperarCarritoDeCompras();
     establecerComportamientoBotonTema();
@@ -1073,6 +1094,7 @@ function correrApp() {
     actualizarTextoCantidadItemsCarrito();
     renderizarTodosLosProductos();
 }
+
 
 correrApp();
 
