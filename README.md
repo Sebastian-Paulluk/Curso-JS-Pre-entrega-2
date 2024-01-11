@@ -1,4 +1,4 @@
-Pre entrega 2 - Tienda virtual de ropa
+Pre entrega 2 - Tienda virtual de ropa -
 Curso JS
 
 
