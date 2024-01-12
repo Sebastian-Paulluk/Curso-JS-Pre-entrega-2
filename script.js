@@ -172,7 +172,7 @@ const mostrarOpcionesDeOrdenDeProductos = function() {
 
 
 
-// --------------------------------- Funciones para guardar y recuperar el carrito localmente ----------
+// --------------------------------- Funciones para guardar y recuperar el carrito de localStorage ----------
 
 
 
@@ -265,12 +265,29 @@ const cambiarTemaActual =()=> {
     };
 };
 
+
+const cambiarImagenYColorAlBotonDeCambiarTema = function() {
+    const botonCambiarTema = document.getElementById("botonTema");
+    const imagenDeBotonCambiarTema = document.getElementById("imagenBotonTema");
+
+    if (temaActual === "Claro") {
+        botonCambiarTema.style.backgroundColor = "black";
+        botonCambiarTema.style.borderColor = "white";
+        imagenDeBotonCambiarTema.src="./assets/iconos/sol_brillante.png"
+    } else {
+        botonCambiarTema.style.backgroundColor = "white";
+        botonCambiarTema.style.borderColor = "black";
+        imagenDeBotonCambiarTema.src="./assets/iconos/sol_oscuro.png"
+    };
+}
+
 /* Funcion para manejar el boton que cambia el tema (Claro/oscuro) de la pagina */
 const establecerComportamientoBotonTema = function () {
     const botonTema = document.getElementById("botonTema");
     botonTema.addEventListener("click", () => {
         
         cambiarTemaActual();
+        cambiarImagenYColorAlBotonDeCambiarTema();
         // Añade la clase "temaOscuro" al body, la cual cambia su color fondo y de texto
         document.body.classList.toggle("temaOscuro"); 
 
@@ -632,7 +649,98 @@ function renderizarSeccionPago() {
 
 
 
-// ----------------------------- Funciones para agregar productos al carrito --------------------
+// ------------------------ Funciones para manejar la cantidad de unidades de los productos desde el carrito-------------
+
+
+
+const hayStockDeProducto = producto => producto.stock > 0;
+
+
+const indiceDelProductoEnElCarrito =(producto)=> carrito.findIndex (item => item.id === producto.id);
+
+
+const reducirUnaUnidadLaCantidadDeStockDisponibleDelProducto = function(producto)  {
+    producto.stock += 1
+};
+
+
+const aumentarUnaUnidadLaCantidadDeStockDisponibleDelProducto = function(producto)  {
+    producto.stock -= 1
+};
+
+
+const actualizarSubtotalDelProducto = function(producto) {
+    const textoSubtotal = document.getElementById(`subtotal${producto.id}`);
+    const cantidadDeUnidadesEnElCarrito = carrito[indiceDelProductoEnElCarrito(producto)].cantidad;
+
+    textoSubtotal.innerText = `Subtotal: $ ${(producto.precio*cantidadDeUnidadesEnElCarrito).toLocaleString()}`
+};
+
+
+const actualizarPrecioTotal = function() {
+    const textoPrecioTotal = document.getElementById("textoPrecioTotalCarrito");
+    const precioTotal = obtenerPrecioTotalDelCarrito();
+  
+    textoPrecioTotal.innerText = `Total: $ ${precioTotal.toLocaleString()}`;
+};
+
+
+const actualizarTextoCantidadActualDeProductoEnCarrito = function(producto){
+    productoEnCarrito = carrito[indiceDelProductoEnElCarrito(producto)];
+
+    const textoCantidadActual = document.getElementById(`cantidadActual${producto.id}`);
+    textoCantidadActual.innerText = productoEnCarrito.cantidad;
+};
+
+
+const reducirUnaUnidadLaCantidadDeProductoEnElCarrito = function(producto)  {
+    productoEnCarrito = carrito[indiceDelProductoEnElCarrito(producto)];
+
+    // Si la cantidad de unidades del producto en el carrito es mayor a 1, se reducen
+    // las unidades en 1. En caso de no querer ninguna unidad (0), se puede directamente
+    // descartar el producto desde el boton de descartar
+    if (productoEnCarrito.cantidad > 1) {
+        productoEnCarrito.cantidad = Math.max(1, (productoEnCarrito.cantidad - 1));
+
+        actualizarTextoCantidadItemsCarrito();
+    
+        actualizarTextoCantidadActualDeProductoEnCarrito(producto);
+        reducirUnaUnidadLaCantidadDeStockDisponibleDelProducto(producto);
+        actualizarSubtotalDelProducto(producto);
+        actualizarPrecioTotal();
+    
+        guardarProductosLocalmente();
+        guardarCarritoLocalmente();
+    };
+};
+
+
+const aumentarUnaUnidadLaCantidadDeProductoEnElCarrito = function(producto)  {
+    productoEnCarrito = carrito[indiceDelProductoEnElCarrito(producto)];
+
+    // Si hay stock disponible del producto, se añade al carrito
+    if (hayStockDeProducto(producto)) { 
+        productoEnCarrito.cantidad = Math.max(1, (productoEnCarrito.cantidad + 1));
+
+        actualizarTextoCantidadItemsCarrito();
+
+        actualizarTextoCantidadActualDeProductoEnCarrito(producto);
+        aumentarUnaUnidadLaCantidadDeStockDisponibleDelProducto(producto);
+        actualizarSubtotalDelProducto(producto);
+        actualizarPrecioTotal();
+
+        guardarProductosLocalmente();
+        guardarCarritoLocalmente();
+    };
+
+};
+
+
+
+
+
+
+// --------------------------------------- Funciones para agregar productos al carrito --------------------
 
 
 
@@ -666,7 +774,7 @@ const agregarProductoACarrito = function(producto) {
 
 
 const comprobarSiHayStockParaAgregarAlCarrito = producto => {
-    if (producto.stock > 0) {
+    if (hayStockDeProducto(producto)) {
         agregarProductoACarrito(producto);
     };
 };
@@ -680,9 +788,11 @@ const comprobarSiHayStockParaAgregarAlCarrito = producto => {
 
 
 
+// Funciones para el stock del array de productos
 const devolverStockAProducto = function(producto, cantidad) {
     producto.stock += cantidad;
 };
+
 
 const quitarProductoDelCarrito = function(producto){
     const indiceDelProductoADescartar = carrito.findIndex(item => item.id === producto.id);
@@ -711,9 +821,100 @@ const descartarProductoDelCarrito = function(producto){
 
 
 
+const establecerComportamientoBotonReducirCantidad = function(producto) {
+    reducirUnaUnidadLaCantidadDeProductoEnElCarrito(producto);
+};
+
+const establecerComportamientoBotonAumentarCantidad = function(producto) {
+    aumentarUnaUnidadLaCantidadDeProductoEnElCarrito(producto);
+};
+
+
+// --- Funciones para mostrar y reducir/aumentar las unidades
+//     de los productos en el carrito
+
+const crearBotonReducirCantidad = function(producto) {
+    const botonReducirCantidad = document.createElement("button");
+    botonReducirCantidad.id = `botonReducirCantidad${producto.id}`;
+    botonReducirCantidad.className = "botonReducirCantidad";
+    botonReducirCantidad.innerText = "-";
+    botonReducirCantidad.addEventListener("click", ()=> {
+        establecerComportamientoBotonReducirCantidad(producto);
+    });
+
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
+    establecerColorDeBordeDeElementoSegunTemaActivo(botonReducirCantidad);
+
+    return botonReducirCantidad;
+};
+
+const crearTextoCantidadActual = function(producto) {
+    const textoCantidadActual  = document.createElement("span");
+    textoCantidadActual.id = `cantidadActual${producto.id}`;
+    textoCantidadActual.className = "cantidadActual";
+
+    textoCantidadActual.innerText = `${carrito[indiceDelProductoEnElCarrito(producto)].cantidad}`;
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
+    establecerColorDeBordeDeElementoSegunTemaActivo(textoCantidadActual);
+
+    return textoCantidadActual;
+};
+
+
+const crearBotonAumentarCantidad = function(producto) {
+    const botonAumentarCantidad = document.createElement("button");
+    botonAumentarCantidad.id = `botonAumentarCantidad${producto.id}`;
+    botonAumentarCantidad.className = "botonAumentarCantidad";
+    botonAumentarCantidad.innerText = "+";
+    botonAumentarCantidad.addEventListener("click", ()=> {
+        establecerComportamientoBotonAumentarCantidad(producto);
+    });
+
+    // En base al tema seleccionado (claro/oscuro), se añade
+    // una clase al elemento para determinar el color de su borde
+    establecerColorDeBordeDeElementoSegunTemaActivo(botonAumentarCantidad);
+
+    return botonAumentarCantidad;
+};
+
+
+/* Funcion para renderizar en el Dom texto con la cantidad de unidades actual del producto
+   en el carrito, asi como tambien los botones para aumentar o reducir dicha cantidad */
+const crearCantidadDeProductoModificable = function(producto) {
+    const contendor = document.getElementById(`contenedorCantidad${producto.id}`) // Obtenemos el contenedor padre
+
+    // Se añaden los elementos al contenedor
+    contendor.appendChild(crearBotonReducirCantidad(producto));
+    contendor.appendChild(crearTextoCantidadActual(producto));
+    contendor.appendChild(crearBotonAumentarCantidad(producto));
+};
+
+
+const crearBotonParaDescartarProductoDelCarrito = function(producto) {
+    // Se genera el boton para descartar el producto del carrito
+    const botonDescartarProducto = document.createElement("button");
+    botonDescartarProducto.className = "botonesDescartarProducto";
+    botonDescartarProducto.innerText = "Descartar";
+    botonDescartarProducto.addEventListener("click", ()=> {
+        descartarProductoDelCarrito(producto);
+    });
+    return botonDescartarProducto;
+};
+
+
+const crearBotonParaDescartarProductoYAgregarloASuContenedor = function(producto) {
+    // Se obtiene su contenedor
+    const contPrecioProducto = document.getElementById(`contenedorSubtotal${producto.id}`);
+    // Se crear y se agrega el boton al contenedor del producto
+    const botonParaDescartarProducto = crearBotonParaDescartarProductoDelCarrito(producto);
+    contPrecioProducto.appendChild(botonParaDescartarProducto);
+};
+
+
 const renderizarProductoEnCarrito = function(productoEnCarrito, contenedor) {
     const producto = buscarProductoPorId(productoEnCarrito.id);
-    const indiceDelProductoEnElCarrito = carrito.findIndex (item => item.id === producto.id);
 
     // Se genera el codigo para para el DOM del producto del carrito, 
     // con su imagen, precio, cantidad y subtotal
@@ -728,27 +929,21 @@ const renderizarProductoEnCarrito = function(productoEnCarrito, contenedor) {
         </div>
         <div id="contenedorPrecio${producto.id}" class="contPrecio">
             <h3 class="valorProductoCarrito">$ ${producto.precio.toLocaleString()}</h3>
-            <p class="cantidadProductoCarrito">Cantidad: ${carrito[indiceDelProductoEnElCarrito].cantidad}</p>
-            <p class"subtotalProductoCarrito>Subtotal: $ ${(producto.precio*carrito[indiceDelProductoEnElCarrito].cantidad).toLocaleString()}</p>
+        </div>
+        <div id="contenedorSubtotal${producto.id}" class="contenedorSubtotal">
+            <div id="contenedorCantidad${producto.id}" class="contenedorCantidad">
+                <span>Cantidad: </span>
+            </div>
+            <p id="subtotal${producto.id}" class="subtotalProductoCarrito">Subtotal: $ ${(producto.precio*carrito[indiceDelProductoEnElCarrito(producto)].cantidad).toLocaleString()}</p>
         </div>`;
 
     // En base al tema seleccionado (claro/oscuro), se añade
     // una clase al elemento para determinar el color de su borde
     establecerColorDeBordeDeElementoSegunTemaActivo(contenedorProductoEnCarrito);
-
     contenedor.appendChild(contenedorProductoEnCarrito);
 
-    // Se genera el boton para descartar el producto del carrito
-    const botonDescartarProducto = document.createElement("button");
-    botonDescartarProducto.className = "botonesDescartarProducto";
-    botonDescartarProducto.innerText = "Descartar";
-    botonDescartarProducto.addEventListener("click", ()=> {
-        descartarProductoDelCarrito(producto);
-    });
-
-    const contPrecioProducto = document.getElementById(`contenedorPrecio${producto.id}`);
-    // Se agrega el boton al contenedor del producto
-    contPrecioProducto.appendChild(botonDescartarProducto);
+    crearCantidadDeProductoModificable(producto);
+    crearBotonParaDescartarProductoYAgregarloASuContenedor(producto);
 };
 
 
@@ -768,7 +963,7 @@ const mostrarPrecioTotalEnCarrito = function() {
 
     const precioTotal = obtenerPrecioTotalDelCarrito();
   
-    contenedorPrecioTotalCarrito.innerHTML = `<h2>Total: $ ${precioTotal.toLocaleString()}</h2>`;
+    contenedorPrecioTotalCarrito.innerHTML = `<h2 id="textoPrecioTotalCarrito">Total: $ ${precioTotal.toLocaleString()}</h2>`;
 
     agregarElementoAlContenedorPrincipal(contenedorPrecioTotalCarrito);
 };
